@@ -16,6 +16,7 @@ exports.placeOrder = async (data) => {
     } else {
       //  send request to order service via rest api
       // publishToQueue(data);
+      console.log(data);
       const order = await axios.post(
         process.env.ORDER_SERVICE_URI,
         { data },
@@ -25,11 +26,17 @@ exports.placeOrder = async (data) => {
         }
         }
       );
-      console.log(order);
+      console.log(order.data.code);
+      if(order.data.code === 400){
+        return {
+          error: true,
+          message: order.data.message
+        }
+      }
       return {
-        error: !user,
+        error: false,
         message: "Order placed successfuly",
-        data: order,
+        data: order.data,
       };
     }
   } catch (err) {
